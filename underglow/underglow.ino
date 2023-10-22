@@ -26,11 +26,27 @@ void rainbowCycle(uint8_t wait)
 	{
 		for (i = 0; i < NUM_LEDS; i++)
 		{
-			leds[i] = Wheel(((i * 256 / NUM_LEDS) + j) & 255);
+			leds[i] = solve_hue(((i * 256 / NUM_LEDS) + j) & 255);
 		}
 		FastLED.show();
 		delay(wait);
 	}
+}
+
+CRGB solve_hue(byte WheelPos)
+{
+	WheelPos = 255 - WheelPos;
+	if (WheelPos < 85)
+	{
+		return CRGB(255 - WheelPos * 3, 0, WheelPos * 3);
+	}
+	if (WheelPos < 170)
+	{
+		WheelPos -= 85;
+		return CRGB(0, WheelPos * 3, 255 - WheelPos * 3);
+	}
+	WheelPos -= 170;
+	return CRGB(WheelPos * 3, 255 - WheelPos * 3, 0);
 }
 
 void colorWipe(CRGB color, uint8_t wait)
@@ -49,14 +65,14 @@ void theaterChase(CRGB color, uint8_t wait, uint8_t amount)
 	{
 		for (int q = 0; q < 3; q++)
 		{
-			for (uint16_t i = 0; i < NUM_LEDS; i = i + 3)
+			for (uint16_t i = 0; i + q < NUM_LEDS; i = i + 3)
 			{
 				leds[i + q] = color;
 			}
 			FastLED.show();
 			delay(wait);
 
-			for (uint16_t i = 0; i < NUM_LEDS; i = i + 3)
+			for (uint16_t i = 0; i + q < NUM_LEDS; i = i + 3)
 			{
 				leds[i + q] = CRGB::Black;
 			}
@@ -64,18 +80,3 @@ void theaterChase(CRGB color, uint8_t wait, uint8_t amount)
 	}
 }
 
-CRGB Wheel(byte WheelPos)
-{
-	WheelPos = 255 - WheelPos;
-	if (WheelPos < 85)
-	{
-		return CRGB(255 - WheelPos * 3, 0, WheelPos * 3);
-	}
-	if (WheelPos < 170)
-	{
-		WheelPos -= 85;
-		return CRGB(0, WheelPos * 3, 255 - WheelPos * 3);
-	}
-	WheelPos -= 170;
-	return CRGB(WheelPos * 3, 255 - WheelPos * 3, 0);
-}

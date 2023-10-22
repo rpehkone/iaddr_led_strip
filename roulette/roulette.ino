@@ -6,12 +6,11 @@
 CRGB leds[NUM_LEDS];
 
 int whiteIndex = 0;
-int spin;
+int spin = NUM_LEDS - 1;
 
 void setup()
 {
 	FastLED.addLeds<NEOPIXEL, LED_PIN>(leds, NUM_LEDS);
-	spin = NUM_LEDS - 1;
 }
 
 void loop()

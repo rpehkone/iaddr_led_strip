@@ -1,30 +1,28 @@
 #include <FastLED.h>
 
 #define NUM_LEDS 229
-#define DATA_PIN 7
-#define NUM_DROPS 5
-#define BRIGHTNESS 64
+#define LED_PIN 7
 
 CRGB leds[NUM_LEDS];
 
-struct Drop
+struct racer
 {
 	int position;
 	int hue;
 	int speed;
 };
 
-Drop drops[NUM_DROPS];
+#define NUM_DROPS 5
+racer racers[NUM_DROPS];
 
 void setup()
 {
-	FastLED.addLeds<WS2812B, DATA_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
-	FastLED.setBrightness(BRIGHTNESS);
+	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
 	for (int i = 0; i < NUM_DROPS; ++i)
 	{
-		drops[i].position = random(0, NUM_LEDS - 1);
-		drops[i].hue = random(0, 255);
-		drops[i].speed = random(1, 3);
+		racers[i].position = random(0, NUM_LEDS - 1);
+		racers[i].hue = random(0, 255);
+		racers[i].speed = random(1, 3);
 	}
 }
 
@@ -33,16 +31,16 @@ void loop()
 	FastLED.clear(); // its kinda cool without clear
 	for (int i = 0; i < NUM_DROPS; ++i)
 	{
-		drops[i].position += drops[i].speed;
-		if (drops[i].position >= NUM_LEDS - 1)
+		racers[i].position += racers[i].speed;
+		if (racers[i].position >= NUM_LEDS - 1)
 		{
-			drops[i].position = random(-20, 0);
-			drops[i].hue = random(0, 255);
+			racers[i].position = random(-20, 0);
+			racers[i].hue = random(0, 255);
 		}
 
-		if (drops[i].position >= 0 && drops[i].position < NUM_LEDS)
+		if (racers[i].position >= 0 && racers[i].position < NUM_LEDS)
 		{
-			leds[drops[i].position] = CHSV(drops[i].hue, 255, 255);
+			leds[racers[i].position] = CHSV(racers[i].hue, 255, 255);
 		}
 	}
 
